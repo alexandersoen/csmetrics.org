@@ -47,10 +47,10 @@ In other words, our complete set of venues may be larger than many users would l
 
 From DBLP, we downloaded the HTML file for each conference/journal considered for every year/volume in our data range of interest (2007-2018). From this HTML file, we extracted paper titles, and additional information, such as page length, authors, etc.). From this list we identified papers, which we defined as full research papers at the venue that were selected through the same editorial process (e.g., submission, peer reviewing, revision, etc.)
 
-For the conferences, we used section headers in DBLP to filter out workshop papers, demonstrations, tutorials, and everything else other than referred papers. The filter that we used searched for section headers and excluded documents with any of the following keywords: ['senior member',"what's hot", "invited", 'doctoral', 'demo', 'demonstration', 'keynote', 'student','speaker', 'tutorial', 'workshop', 'panel','competition', 'challenge'].
+For the conferences, we used section headers in DBLP to filter out workshop papers, demonstrations, tutorials, and everything else other than referred papers. The filter that we used searched for section headers and excluded documents with any of the following keywords: ['senior member','what's hot', 'invited', 'doctoral', 'demo', 'demonstration', 'keynote', 'student','speaker', 'tutorial', 'workshop', 'panel','competition', 'challenge'].
 For the journals, we excluded documents with the following keywords: ['editor', 'special issue','state of the journal', 'in memory'].
 
-We use the page numbers to further filter short papers -- see [different filtering methods for comparison](#filtering). Among the five options, we choose 'Header + Page Num (k)' filter. The minimum page length is 4.
+We use the page numbers to further filter short papers -- see [different filtering methods for comparison](#filtering). Among the five options, we choose `'Header + Page Num (k)'` filter. The minimum page length is 4.
 
 #### <a name="filtering"></a>Different filtering methods for comparison
 
@@ -58,15 +58,15 @@ Five different filtering methods are considered:
 
 * `filter_by_header 'Header'`: This method uses information contained in the header of the section the paper was scraped from. Specifically, if the section header for a paper contains particular keywords then that paper will be excluded. Not all venues are divided into sections on DBLP and in cases where there are papers without section headers, all such papers are included.
 
-* `filter_by_page_number_keep_missing 'Page Num (k)'`: This method uses information about the pagination for the paper as scraped from DBPL with the rest of the paper information. The pagination which is pulled from the webpage HTML and stored as a string is parsed into a start and end page number. Using these numbers, the length of the papers is determined and papers are included if they meet a minimum page length. The keep_missing and (k) in the function name and legend label for this filter refer to the method used for dealing with papers for which pagination information could not be validly formatted into a start and end page. In this instance, papers without valid pagination are included (i.e. are not removed by the filter).
+* `filter_by_page_number_keep_missing 'Page Num (k)'`: This method uses information about the pagination for the paper as scraped from DBPL with the rest of the paper information. The pagination which is pulled from the webpage HTML and stored as a string is parsed into a start and end page number. Using these numbers, the length of the papers is determined and papers are included if they meet a minimum page length. The `keep_missing` and `(k)` in the function name and legend label for this filter refer to the method used for dealing with papers for which pagination information could not be validly formatted into a start and end page. In this instance, papers without valid pagination are included (i.e. are not removed by the filter).
 
-* `filter_by_page_number_remove_missing 'Page Num (r)'`: This method is the same as filter_by_page_number_keep_missing with the exception that papers for which pagination information could not be validly formatted are not included (i.e. are removed by the filter).
+* `filter_by_page_number_remove_missing 'Page Num (r)'`: This method is the same as `filter_by_page_number_keep_missing` with the exception that papers for which pagination information could not be validly formatted are not included (i.e. are removed by the filter).
 
-* `filter_by_header_and_page_number_keep_missing 'Header + Page Num (k)'`: This method first applies the filter_by_header method described above, and then applies the filter_by_page_number_keep_missing method to the remaining papers. This means that the resulting papers are the intersection of the papers that pass each of these filtering methods.
+* `filter_by_header_and_page_number_keep_missing 'Header + Page Num (k)'`: This method first applies the `filter_by_header` method described above, and then applies the `filter_by_page_number_keep_missing` method to the remaining papers. This means that the resulting papers are the intersection of the papers that pass each of these filtering methods.
 
-* `filter_by_header_and_page_number_remove_missing 'Header + Page Num (r)'`: Similarly, this method first applies the filter_by_headermethod described above, and then applies the filter_by_page_number_remove_missing method to the remaining papers. Again, this means that the resulting papers are the intersection of the papers that pass each of these filtering methods.
+* `filter_by_header_and_page_number_remove_missing 'Header + Page Num (r)'`: Similarly, this method first applies the `filter_by_headermethod` described above, and then applies the `filter_by_page_number_remove_missing` method to the remaining papers. Again, this means that the resulting papers are the intersection of the papers that pass each of these filtering methods.
 
-We test the filtering methods using the random sample of (conference,year) tuples (~70) from [conference_samples](conference_samples.csv). The Figure below shows the cumulative fraction of a modest set of (conference, year) tuples with respect to the difference between the differences between what the systems finds and the editors’ input in proceeding foreword.
+We test the filtering methods using the random sample of (conference, year) tuples (~70) from [conference_samples](conference_samples.csv). The Figure below shows the cumulative fraction of a modest set of (conference, year) tuples with respect to the differences between what the systems finds and the editors’ input in proceeding foreword.
 
 <p align="center">
 <img width="60%" src="filtering_count_comparison.png" />
@@ -108,15 +108,15 @@ We propose combining two metrics for the purposes of analyzing past research imp
 
 We start by dividing credit for each paper equally among all authors and credit it to their institution.
 
-**Measured impact**  For each publication, we query Microsoft Academic API for all citations from any year. Each institution with an author then accrues these citations weighted by the fraction of authors at the institution. For example, a publication with 2 authors at University A and one author at University B and 100 citations, accrues 66.6 citations to University A and 33.3 citations to University B.
+**Measured impact**  For each publication, we query Microsoft Academic API for all citations from any year. Each institution with an author then accrues these citations weighted by the fraction of authors at the institution. For example, a publication with 2 authors at University A and 1 author at University B and 100 citations, accrues 66.6 citations to University A and 33.3 citations to University B.
 
-**Predicted impact**   More than other disciplines, CS research institutions are currently experiencing a lot of growth to meet student demand and societal workforce and innovation demands on CS.. We have thus included a predictive forward-looking metric, to understand the benefits of investment or the results of neglect.
+**Predicted impact**   More than other disciplines, CS research institutions are currently experiencing a lot of growth to meet student demand and societal workforce and innovation demands on CS. We have thus included a predictive forward-looking metric, to understand the benefits of investment or the results of neglect.
 
 For the predicted impact, we compute the number of papers appearing in a venue and divide the credit equally among authors’ institutions. We optionally weight this count by the geometric mean of the citations to the venue.  This weighting thus gives more potential impact to papers that appear in venues that in the past had more citations.  We use the geometric mean instead of the arithmetic mean because even in the impactful venues, many papers are not cited, many incur only a modest number of citations (which depend on the discipline and point in history), and a few are very highly cited.
 
 ### <a name="limitations"></a>Limitations
 
-As discussed above, we only consider publications, which are a very important piece of scholarly output, but  only a piece.  Even when considering publications, we ideally wish to measure impact rather than just count publications.  We use citations as the measure of impact, but recognize that citations do not tell the full story.
+As discussed above, we only consider publications, which are a very important piece of scholarly output, but  only a piece.  Even when considering publications, we ideally wish to measure impact rather than just counting publications.  We use citations as the measure of impact, but recognize that citations do not tell the full story.
 
 A significant challenge with using citations as a metric is that citations take time to accumulate, with significant variation across papers in citation rate over time.   For recent papers, less than 2 or 3 years old, citations are not a good way to measure impact.   We have developed and used a novel metric, based on predicted citation count, estimating this based on the venue.  
 
